@@ -4,7 +4,7 @@
   "title": "Ideate",
   "description": "Create a project folder, initialize it, and open with your IDE.",
   "version": "1.0.0",
-  "icon": "bulb.svg",
+  "icon": "bulb.png",
   "author": "Felix",
   "license": "MIT",
   "categories": [
@@ -32,27 +32,28 @@
   ],
   "preferences": [
     {
-    "name": "language",
-    "type": "dropdown",
-    "required": false,
-    "title": "Language",
-    "description": "Select your preferred language",
-    "default": "en",
-    "data": [
-      {
-        "title": "English",
-        "value": "en"
-      },
-      {
-        "title": "简体中文",
-        "value": "zh-CN"
-      }
-    ]
-  }
+      "name": "language",
+      "type": "dropdown",
+      "required": false,
+      "title": "Language",
+      "description": "Select your preferred language",
+      "default": "en",
+      "data": [
+        {
+          "title": "English",
+          "value": "en"
+        },
+        {
+          "title": "简体中文",
+          "value": "zh-CN"
+        }
+      ]
+    }
   ],
   "dependencies": {
     "@raycast/api": "^1.100.0",
-    "@raycast/utils": "^1.19.1"
+    "@raycast/utils": "^1.19.1",
+    "ray": "^0.0.1"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",
