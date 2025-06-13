@@ -1,12 +1,4 @@
-import {
-  ActionPanel,
-  Action,
-  Form,
-  showToast,
-  Toast,
-  getApplications,
-  useNavigation,
-} from "@raycast/api";
+import { ActionPanel, Action, Form, showToast, Toast, getApplications, useNavigation } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { getPresets, savePreset, InitPreset } from "./utils/storage";
 import { useTranslation } from "./utils/i18n";
@@ -25,8 +17,8 @@ export default function AddInitPreset() {
       setApps(
         list
           .filter((app) => typeof app.bundleId === "string")
-          .map((app) => ({ name: app.name, bundleId: app.bundleId as string }))
-      )
+          .map((app) => ({ name: app.name, bundleId: app.bundleId as string })),
+      ),
     );
   }, []);
 
@@ -36,7 +28,7 @@ export default function AddInitPreset() {
   }
 
   async function handleSubmit() {
-    if (!await isPresetNameUnique(name)) {
+    if (!(await isPresetNameUnique(name))) {
       await showToast({
         style: Toast.Style.Failure,
         title: t.preset.nameExists,
@@ -84,10 +76,10 @@ export default function AddInitPreset() {
       await showToast({ style: Toast.Style.Success, title: t.preset.saved });
       pop();
     } catch (error) {
-      await showToast({ 
-        style: Toast.Style.Failure, 
-        title: t.preset.saveFailed, 
-        message: String(error) 
+      await showToast({
+        style: Toast.Style.Failure,
+        title: t.preset.saveFailed,
+        message: String(error),
       });
     }
   }

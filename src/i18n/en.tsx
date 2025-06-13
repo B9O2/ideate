@@ -24,7 +24,7 @@ const en: Translation = {
     saveFailed: "Failed to save preset",
     loadFailed: "Failed to load presets",
     confirmDelete: "Confirm Deletion",
-    deleteMessage: "Are you sure you want to delete the preset \"{name}\"?",
+    deleteMessage: 'Are you sure you want to delete the preset "{name}"?',
     deleteFailed: "Failed to delete preset",
     updated: "Preset updated!",
     updateFailed: "Failed to update preset",

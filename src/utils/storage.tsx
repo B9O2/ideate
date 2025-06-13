@@ -14,7 +14,7 @@ export async function getPresets(): Promise<InitPreset[]> {
   if (!data) {
     return [];
   }
-  
+
   try {
     return JSON.parse(data as string);
   } catch (error) {
@@ -25,19 +25,19 @@ export async function getPresets(): Promise<InitPreset[]> {
 
 export async function savePreset(preset: InitPreset): Promise<void> {
   const presets = await getPresets();
-  const existingIndex = presets.findIndex(p => p.name === preset.name);
-  
+  const existingIndex = presets.findIndex((p) => p.name === preset.name);
+
   if (existingIndex >= 0) {
     presets[existingIndex] = preset;
   } else {
     presets.push(preset);
   }
-  
+
   await LocalStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
 }
 
 export async function deletePreset(name: string): Promise<void> {
   const presets = await getPresets();
-  const filteredPresets = presets.filter(p => p.name !== name);
+  const filteredPresets = presets.filter((p) => p.name !== name);
   await LocalStorage.setItem(PRESETS_KEY, JSON.stringify(filteredPresets));
 }

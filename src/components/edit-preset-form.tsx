@@ -1,14 +1,6 @@
-import {
-  ActionPanel,
-  Action,
-  Form,
-  showToast,
-  Toast,
-  getApplications,
-  useNavigation,
-} from "@raycast/api";
+import { ActionPanel, Action, Form, showToast, Toast, getApplications, useNavigation } from "@raycast/api";
 import { useState, useEffect } from "react";
-import { getPresets, savePreset, InitPreset,deletePreset } from "../utils/storage";
+import { getPresets, savePreset, InitPreset, deletePreset } from "../utils/storage";
 import { useTranslation } from "../utils/i18n";
 
 interface EditPresetFormProps {
@@ -30,8 +22,8 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
       setApps(
         list
           .filter((app) => typeof app.bundleId === "string")
-          .map((app) => ({ name: app.name, bundleId: app.bundleId as string }))
-      )
+          .map((app) => ({ name: app.name, bundleId: app.bundleId as string })),
+      ),
     );
   }, []);
 
@@ -90,7 +82,7 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
       if (name !== preset.name) {
         await deletePreset(preset.name);
       }
-      
+
       await savePreset(updatedPreset);
       await showToast({ style: Toast.Style.Success, title: t.preset.updated });
       await onSave();

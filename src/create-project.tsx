@@ -13,7 +13,7 @@ export default function CreateProject() {
   const [selected, setSelected] = useState<string>("");
   const [projectName, setProjectName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     async function loadPresets() {
       try {
@@ -23,16 +23,16 @@ export default function CreateProject() {
           setSelected(loadedPresets[0].name);
         }
       } catch (error) {
-        await showToast({ 
-          style: Toast.Style.Failure, 
-          title: t.preset.loadFailed, 
-          message: String(error) 
+        await showToast({
+          style: Toast.Style.Failure,
+          title: t.preset.loadFailed,
+          message: String(error),
         });
       } finally {
         setIsLoading(false);
       }
     }
-    
+
     loadPresets();
   }, []);
 
@@ -53,7 +53,7 @@ export default function CreateProject() {
 
       // 创建项目目录
       mkdirSync(targetDir, { recursive: true });
-      
+
       // 只有在命令非空时才执行初始化命令
       if (preset.command && preset.command.trim()) {
         await new Promise<void>((resolve, reject) => {
@@ -83,14 +83,14 @@ export default function CreateProject() {
         title: t.project.created,
         message: targetDir,
       });
-      
+
       // 关闭命令窗口
       await popToRoot();
     } catch (error) {
-      await showToast({ 
-        style: Toast.Style.Failure, 
-        title: t.project.failed, 
-        message: String(error) 
+      await showToast({
+        style: Toast.Style.Failure,
+        title: t.project.failed,
+        message: String(error),
       });
     }
 
@@ -98,34 +98,25 @@ export default function CreateProject() {
   }
 
   // 获取选中预设的详情
-  const selectedPreset = presets.find(p => p.name === selected);
+  const selectedPreset = presets.find((p) => p.name === selected);
 
   return (
     <Form
       isLoading={isLoading}
       actions={
         <ActionPanel>
-          <Action.SubmitForm 
-            title={t.project.create} 
-            onSubmit={handleSubmit} 
-          />
+          <Action.SubmitForm title={t.project.create} onSubmit={handleSubmit} />
         </ActionPanel>
       }
     >
-
-      <Form.TextField 
-        id="projectName" 
-        title={t.project.name} 
-        value={projectName} 
-        onChange={setProjectName} 
-      />
+      <Form.TextField id="projectName" title={t.project.name} value={projectName} onChange={setProjectName} />
 
       <Form.Dropdown id="preset" title={t.project.selectPreset} value={selected} onChange={setSelected}>
         {presets.map((p) => (
           <Form.Dropdown.Item key={p.name} value={p.name} title={p.name} />
         ))}
       </Form.Dropdown>
-       
+
       {selectedPreset && (
         <Form.Description
           title={t.preset.details}

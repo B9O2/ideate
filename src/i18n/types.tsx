@@ -48,8 +48,8 @@ export interface Translation {
     ideApp: string;
     initCommand: string;
     fillAll: string;
-    nameRequired: string;    // 新增
-    folderRequired: string;  // 新增
-    appRequired: string;     // 新增
+    nameRequired: string; // 新增
+    folderRequired: string; // 新增
+    appRequired: string; // 新增
   };
 }

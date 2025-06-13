@@ -73,10 +73,7 @@ export default function ManagePresets() {
             ]}
             actions={
               <ActionPanel>
-                <Action.Push
-                  title={t.preset.edit}
-                  target={<EditPresetForm preset={preset} onSave={loadPresets} />}
-                />
+                <Action.Push title={t.preset.edit} target={<EditPresetForm preset={preset} onSave={loadPresets} />} />
                 <Action
                   title={t.preset.delete}
                   style={Action.Style.Destructive}
