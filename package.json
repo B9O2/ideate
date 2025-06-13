@@ -3,6 +3,7 @@
   "name": "ideate",
   "title": "Ideate",
   "description": "Create a project folder, initialize it, and open with your IDE.",
+  "version": "1.0.0",
   "icon": "bulb.svg",
   "author": "Felix",
   "license": "MIT",
