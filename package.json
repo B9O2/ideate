@@ -3,8 +3,8 @@
   "name": "ideate",
   "title": "Ideate",
   "description": "Create a project folder, initialize it, and open with your IDE.",
-  "icon": "extension-icon.png",
-  "author": "b9o2",
+  "icon": "bulb.svg",
+  "author": "Felix",
   "license": "MIT",
   "categories": [
     "Developer Tools"
@@ -13,36 +13,45 @@
     {
       "name": "create-project",
       "title": "Create Project",
-      "description": "Create and open a new project folder",
+      "description": "Choose a saved preset and create a project",
+      "mode": "view"
+    },
+    {
+      "name": "add-init-preset",
+      "title": "Add Preset",
+      "description": "Add a reusable project preset",
+      "mode": "view"
+    },
+    {
+      "name": "manage-presets",
+      "title": "Manage Presets",
+      "description": "View, edit and delete your project presets",
       "mode": "view"
     }
   ],
   "preferences": [
     {
-      "name": "defaultPath",
-      "type": "directory",
-      "title": "Default Folder Path",
-      "description": "Root path where new projects will be created",
-      "default": "~/Projects"
-    },
-    {
-      "name": "ideApp",
-      "type": "appPicker",
-      "title": "IDE Application",
-      "description": "Choose the app to open the project folder",
-      "default": ""
-    },
-    {
-      "name": "initCommand",
-      "type": "textarea",
-      "title": "Initialization Command",
-      "description": "Shell command to initialize the folder (e.g., git init)",
-      "default": "git init"
-    }
+    "name": "language",
+    "type": "dropdown",
+    "required": false,
+    "title": "Language",
+    "description": "Select your preferred language",
+    "default": "en",
+    "data": [
+      {
+        "title": "English",
+        "value": "en"
+      },
+      {
+        "title": "简体中文",
+        "value": "zh-CN"
+      }
+    ]
+  }
   ],
   "dependencies": {
-    "@raycast/api": "^1.79.0",
-    "@raycast/utils": "^1.17.0"
+    "@raycast/api": "^1.100.0",
+    "@raycast/utils": "^1.19.1"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",

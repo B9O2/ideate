@@ -1,91 +1,137 @@
-import { ActionPanel, Form, Action, showToast, Toast, getPreferenceValues } from "@raycast/api";
-import { useState } from "react";
-import { execSync } from "child_process";
-import { mkdirSync } from "fs";
-import { join } from "path";
+import { ActionPanel, Action, Form, showToast, Toast, popToRoot } from "@raycast/api";
+import { useState, useEffect } from "react";
 import { homedir } from "os";
+import { join } from "path";
+import { mkdirSync } from "fs";
+import { exec } from "child_process";
+import { getPresets, InitPreset } from "./utils/storage";
+import { useTranslation } from "./utils/i18n";
 
-interface Preferences {
-  defaultPath: string;
-  ideApp: string;
-  initCommands: string;
-}
+export default function CreateProject() {
+  const { t } = useTranslation();
+  const [presets, setPresets] = useState<InitPreset[]>([]);
+  const [selected, setSelected] = useState<string>("");
+  const [projectName, setProjectName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    async function loadPresets() {
+      try {
+        const loadedPresets = await getPresets();
+        setPresets(loadedPresets);
+        if (loadedPresets.length > 0) {
+          setSelected(loadedPresets[0].name);
+        }
+      } catch (error) {
+        await showToast({ 
+          style: Toast.Style.Failure, 
+          title: t.preset.loadFailed, 
+          message: String(error) 
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    
+    loadPresets();
+  }, []);
 
-interface InitCommand {
-  label: string;
-  command: string;
-}
-
-export default function Command() {
-  const prefs = getPreferenceValues<Preferences>();
-  const [name, setName] = useState("");
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-
-  // 解析配置为 { label, command }
-  const parsedCommands: InitCommand[] = prefs.initCommands
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [label, ...rest] = line.split("=>");
-      return {
-        label: label.trim(),
-        command: rest.join("=>").trim(),
-      };
-    })
-    .filter((cmd) => cmd.label && cmd.command);
-
-  const commandMap = new Map(parsedCommands.map((cmd) => [cmd.label, cmd.command]));
-
-  const handleSubmit = async () => {
-    if (!name) {
-      await showToast({ style: Toast.Style.Failure, title: "Project name is required" });
+  async function handleSubmit() {
+    const preset = presets.find((p) => p.name === selected);
+    if (!preset) {
+      await showToast({ style: Toast.Style.Failure, title: t.project.noPreset });
+      return;
+    }
+    if (!projectName.trim()) {
+      await showToast({ style: Toast.Style.Failure, title: t.project.needName });
       return;
     }
 
-    const basePath = prefs.defaultPath.replace(/^~(?=$|\/|\\)/, homedir());
-    const projectPath = join(basePath, name);
-
     try {
-      mkdirSync(projectPath, { recursive: true });
+      const basePath = preset.path[0];
+      const targetDir = join(basePath.replace(/^~(?=$|\/|\\)/, homedir()), projectName);
 
-      for (const label of selectedLabels) {
-        const cmd = commandMap.get(label);
-        if (cmd) {
-          execSync(cmd, { cwd: projectPath, stdio: "inherit" });
-        }
+      // 创建项目目录
+      mkdirSync(targetDir, { recursive: true });
+      
+      // 只有在命令非空时才执行初始化命令
+      if (preset.command && preset.command.trim()) {
+        await new Promise<void>((resolve, reject) => {
+          exec(preset.command, { cwd: targetDir }, (error) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve();
+            }
+          });
+        });
       }
 
-      execSync(`open -a "${prefs.ideApp}" "${projectPath}"`);
+      // 用指定应用打开项目
+      await new Promise<void>((resolve, reject) => {
+        exec(`open -b "${preset.ideBundleId}" "${targetDir}"`, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
 
       await showToast({
         style: Toast.Style.Success,
-        title: "Project created",
-        message: projectPath,
+        title: t.project.created,
+        message: targetDir,
       });
-    } catch (err: any) {
-      await showToast({
-        style: Toast.Style.Failure,
-        title: "Failed to create project",
-        message: err.message,
+      
+      // 关闭命令窗口
+      await popToRoot();
+    } catch (error) {
+      await showToast({ 
+        style: Toast.Style.Failure, 
+        title: t.project.failed, 
+        message: String(error) 
       });
     }
-  };
+
+    popToRoot();
+  }
+
+  // 获取选中预设的详情
+  const selectedPreset = presets.find(p => p.name === selected);
 
   return (
     <Form
+      isLoading={isLoading}
       actions={
         <ActionPanel>
-          <Action.SubmitForm title="Create Project" onSubmit={handleSubmit} />
+          <Action.SubmitForm 
+            title={t.project.create} 
+            onSubmit={handleSubmit} 
+          />
         </ActionPanel>
       }
     >
-      <Form.TextField id="name" title="Project Name" value={name} onChange={setName} />
-      <Form.TagPicker id="initCommands" title="Select Initialization Steps" onChange={setSelectedLabels}>
-        {parsedCommands.map((cmd) => (
-          <Form.TagPicker.Item key={cmd.label} value={cmd.label} title={cmd.label} />
+
+      <Form.TextField 
+        id="projectName" 
+        title={t.project.name} 
+        value={projectName} 
+        onChange={setProjectName} 
+      />
+
+      <Form.Dropdown id="preset" title={t.project.selectPreset} value={selected} onChange={setSelected}>
+        {presets.map((p) => (
+          <Form.Dropdown.Item key={p.name} value={p.name} title={p.name} />
         ))}
-      </Form.TagPicker>
+      </Form.Dropdown>
+       
+      {selectedPreset && (
+        <Form.Description
+          title={t.preset.details}
+          text={`${t.common.path}: ${selectedPreset.path[0].replace(/^~(?=$|\/|\\)/, homedir())}\n${t.common.command}: ${selectedPreset.command}`}
+        />
+      )}
     </Form>
   );
 }
