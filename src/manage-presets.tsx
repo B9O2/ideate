@@ -72,11 +72,7 @@ export default function ManagePresets() {
             actions={
               <ActionPanel>
                 <Action.Push title="Edit Preset" target={<EditPresetForm preset={preset} onSave={loadPresets} />} />
-                <Action
-                  title="Delete Preset"
-                  style={Action.Style.Destructive}
-                  onAction={() => handleDelete(preset)}
-                />
+                <Action title="Delete Preset" style={Action.Style.Destructive} onAction={() => handleDelete(preset)} />
               </ActionPanel>
             }
           />
