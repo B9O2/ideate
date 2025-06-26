@@ -1,7 +1,6 @@
 import { ActionPanel, Action, List, showToast, Toast, confirmAlert, Alert } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { getPresets, deletePreset, InitPreset } from "./utils/storage";
-import { t } from "./constants/translations";
 import { homedir } from "os";
 import EditPresetForm from "./components/edit-preset-form";
 
@@ -17,7 +16,7 @@ export default function ManagePresets() {
     } catch (error) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.preset.loadFailed,
+        title: "Failed to load presets",
         message: String(error),
       });
     } finally {
@@ -32,22 +31,22 @@ export default function ManagePresets() {
   async function handleDelete(preset: InitPreset) {
     if (
       await confirmAlert({
-        title: t.preset.confirmDelete,
-        message: t.preset.deleteMessage.replace("{name}", preset.name),
+        title: "Confirm Deletion",
+        message: `Are you sure you want to delete the preset "${preset.name}"?`,
         primaryAction: {
-          title: t.common.delete,
+          title: "Delete",
           style: Alert.ActionStyle.Destructive,
         },
       })
     ) {
       try {
         await deletePreset(preset.name);
-        await showToast({ style: Toast.Style.Success, title: t.preset.deleted });
+        await showToast({ style: Toast.Style.Success, title: "Preset deleted" });
         await loadPresets(); // 重新加载预设列表
       } catch (error) {
         await showToast({
           style: Toast.Style.Failure,
-          title: t.preset.deleteFailed,
+          title: "Failed to delete preset",
           message: String(error),
         });
       }
@@ -55,26 +54,26 @@ export default function ManagePresets() {
   }
 
   return (
-    <List isLoading={isLoading} searchBarPlaceholder={t.preset.searchPlaceholder}>
+    <List isLoading={isLoading} searchBarPlaceholder="Search presets...">
       {presets.length === 0 && !isLoading ? (
-        <List.EmptyView title={t.preset.noPresets} description={t.preset.addFirst} />
+        <List.EmptyView title="No presets found" description="Add your first preset to get started" />
       ) : (
         presets.map((preset) => (
           <List.Item
             key={preset.name}
             title={preset.name}
-            subtitle={preset.command || t.preset.noCommand}
+            subtitle={preset.command || "No command"}
             accessories={[
               {
                 text: preset.path[0].replace(/^~(?=$|\/|\\)/, homedir()),
-                tooltip: t.common.path,
+                tooltip: "Path",
               },
             ]}
             actions={
               <ActionPanel>
-                <Action.Push title={t.preset.edit} target={<EditPresetForm preset={preset} onSave={loadPresets} />} />
+                <Action.Push title="Edit Preset" target={<EditPresetForm preset={preset} onSave={loadPresets} />} />
                 <Action
-                  title={t.preset.delete}
+                  title="Delete Preset"
                   style={Action.Style.Destructive}
                   onAction={() => handleDelete(preset)}
                 />

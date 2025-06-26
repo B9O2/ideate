@@ -1,7 +1,6 @@
 import { ActionPanel, Action, Form, showToast, Toast, getApplications, useNavigation } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { getPresets, savePreset, InitPreset, deletePreset } from "../utils/storage";
-import { t } from "../constants/translations";
 
 interface EditPresetFormProps {
   preset: InitPreset;
@@ -36,8 +35,8 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
     if (name !== preset.name && !(await isPresetNameUniqueExceptSelf(name))) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.preset.nameExists,
-        message: t.preset.chooseName,
+        title: "Preset name already exists",
+        message: "Please choose a different name",
       });
       return;
     }
@@ -46,7 +45,7 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
     if (!name) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.form.nameRequired,
+        title: "Preset name is required",
       });
       return;
     }
@@ -55,7 +54,7 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
     if (!pathVal || pathVal.length === 0) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.form.folderRequired,
+        title: "Please select at least one folder",
       });
       return;
     }
@@ -64,7 +63,7 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
     if (!selectedApp) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.form.appRequired,
+        title: "Please select an application",
       });
       return;
     }
@@ -83,13 +82,13 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
       }
 
       await savePreset(updatedPreset);
-      await showToast({ style: Toast.Style.Success, title: t.preset.updated });
+      await showToast({ style: Toast.Style.Success, title: "Preset updated!" });
       await onSave();
       pop();
     } catch (error) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.preset.updateFailed,
+        title: "Failed to update preset",
         message: String(error),
       });
     }
@@ -99,28 +98,28 @@ export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) 
     <Form
       actions={
         <ActionPanel>
-          <Action.SubmitForm title={t.common.save} onSubmit={handleSubmit} />
+          <Action.SubmitForm title="Save" onSubmit={handleSubmit} />
         </ActionPanel>
       }
     >
-      <Form.TextField id="name" title={t.form.presetName} value={name} onChange={setName} />
+      <Form.TextField id="name" title="Preset Name" value={name} onChange={setName} />
       <Form.FilePicker
         id="path"
-        title={t.form.baseFolder}
+        title="Project Base Folder"
         allowMultipleSelection={false}
         canChooseFiles={false}
         canChooseDirectories={true}
         value={pathVal}
         onChange={setPath}
       />
-      <Form.Dropdown id="ideApp" title={t.form.ideApp} value={selectedApp} onChange={setApp}>
+      <Form.Dropdown id="ideApp" title="IDE Application" value={selectedApp} onChange={setApp}>
         {apps.map((app) => (
           <Form.Dropdown.Item key={app.bundleId} value={app.bundleId} title={app.name} />
         ))}
       </Form.Dropdown>
       <Form.TextField
         id="command"
-        title={t.form.initCommand}
+        title="Initialization Command (Optional)"
         placeholder="example: git init"
         value={command}
         onChange={setCommand}

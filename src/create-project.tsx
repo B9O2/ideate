@@ -5,7 +5,6 @@ import { join } from "path";
 import { mkdirSync } from "fs";
 import { exec } from "child_process";
 import { getPresets, InitPreset } from "./utils/storage";
-import { t } from "./constants/translations";
 
 export default function CreateProject() {
   const [presets, setPresets] = useState<InitPreset[]>([]);
@@ -24,7 +23,7 @@ export default function CreateProject() {
       } catch (error) {
         await showToast({
           style: Toast.Style.Failure,
-          title: t.preset.loadFailed,
+          title: "Failed to load presets",
           message: String(error),
         });
       } finally {
@@ -38,11 +37,11 @@ export default function CreateProject() {
   async function handleSubmit() {
     const preset = presets.find((p) => p.name === selected);
     if (!preset) {
-      await showToast({ style: Toast.Style.Failure, title: t.project.noPreset });
+      await showToast({ style: Toast.Style.Failure, title: "No preset selected" });
       return;
     }
     if (!projectName.trim()) {
-      await showToast({ style: Toast.Style.Failure, title: t.project.needName });
+      await showToast({ style: Toast.Style.Failure, title: "Project name is required" });
       return;
     }
 
@@ -79,7 +78,7 @@ export default function CreateProject() {
 
       await showToast({
         style: Toast.Style.Success,
-        title: t.project.created,
+        title: "Project created",
         message: targetDir,
       });
 
@@ -88,7 +87,7 @@ export default function CreateProject() {
     } catch (error) {
       await showToast({
         style: Toast.Style.Failure,
-        title: t.project.failed,
+        title: "Project creation failed",
         message: String(error),
       });
     }
@@ -104,13 +103,13 @@ export default function CreateProject() {
       isLoading={isLoading}
       actions={
         <ActionPanel>
-          <Action.SubmitForm title={t.project.create} onSubmit={handleSubmit} />
+          <Action.SubmitForm title="Create Project" onSubmit={handleSubmit} />
         </ActionPanel>
       }
     >
-      <Form.TextField id="projectName" title={t.project.name} value={projectName} onChange={setProjectName} />
+      <Form.TextField id="projectName" title="Project Name" value={projectName} onChange={setProjectName} />
 
-      <Form.Dropdown id="preset" title={t.project.selectPreset} value={selected} onChange={setSelected}>
+      <Form.Dropdown id="preset" title="Select Preset" value={selected} onChange={setSelected}>
         {presets.map((p) => (
           <Form.Dropdown.Item key={p.name} value={p.name} title={p.name} />
         ))}
@@ -118,8 +117,8 @@ export default function CreateProject() {
 
       {selectedPreset && (
         <Form.Description
-          title={t.preset.details}
-          text={`${t.common.path}: ${selectedPreset.path[0].replace(/^~(?=$|\/|\\)/, homedir())}\n${t.common.command}: ${selectedPreset.command}`}
+          title="Preset Details"
+          text={`Path: ${selectedPreset.path[0].replace(/^~(?=$|\/|\\)/, homedir())}\nCommand: ${selectedPreset.command}`}
         />
       )}
     </Form>
