@@ -1,7 +1,7 @@
 import { ActionPanel, Action, Form, showToast, Toast, getApplications, useNavigation } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { getPresets, savePreset, InitPreset, deletePreset } from "../utils/storage";
-import { useTranslation } from "../utils/i18n";
+import { t } from "../constants/translations";
 
 interface EditPresetFormProps {
   preset: InitPreset;
@@ -9,7 +9,6 @@ interface EditPresetFormProps {
 }
 
 export default function EditPresetForm({ preset, onSave }: EditPresetFormProps) {
-  const { t } = useTranslation();
   const [name, setName] = useState(preset.name);
   const [pathVal, setPath] = useState<string[]>(preset.path);
   const [command, setCommand] = useState(preset.command);

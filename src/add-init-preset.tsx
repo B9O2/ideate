@@ -1,10 +1,9 @@
 import { ActionPanel, Action, Form, showToast, Toast, getApplications, useNavigation } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { getPresets, savePreset, InitPreset } from "./utils/storage";
-import { useTranslation } from "./utils/i18n";
+import { t } from "./constants/translations";
 
 export default function AddInitPreset() {
-  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [pathVal, setPath] = useState<string[]>([]);
   const [command, setCommand] = useState("");

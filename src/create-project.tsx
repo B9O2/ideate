@@ -5,10 +5,9 @@ import { join } from "path";
 import { mkdirSync } from "fs";
 import { exec } from "child_process";
 import { getPresets, InitPreset } from "./utils/storage";
-import { useTranslation } from "./utils/i18n";
+import { t } from "./constants/translations";
 
 export default function CreateProject() {
-  const { t } = useTranslation();
   const [presets, setPresets] = useState<InitPreset[]>([]);
   const [selected, setSelected] = useState<string>("");
   const [projectName, setProjectName] = useState("");

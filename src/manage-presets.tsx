@@ -1,12 +1,11 @@
 import { ActionPanel, Action, List, showToast, Toast, confirmAlert, Alert } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { getPresets, deletePreset, InitPreset } from "./utils/storage";
-import { useTranslation } from "./utils/i18n";
+import { t } from "./constants/translations";
 import { homedir } from "os";
 import EditPresetForm from "./components/edit-preset-form";
 
 export default function ManagePresets() {
-  const { t } = useTranslation();
   const [presets, setPresets] = useState<InitPreset[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

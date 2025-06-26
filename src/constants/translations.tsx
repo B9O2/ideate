@@ -1,6 +1,4 @@
-import { Translation } from "./types";
-
-const en: Translation = {
+export const t = {
   common: {
     save: "Save",
     delete: "Delete",
@@ -55,5 +53,3 @@ const en: Translation = {
     appRequired: "Please select an application",
   },
 };
-
-export default en;
